@@ -31,6 +31,8 @@ app.post('/api/deletediagdata', db.deletediagdata)
 app.post('/api/deletelabdata', db.deletelabdata)
 app.post('/api/createlabdata', db.createlabdata)
 
+app.post('/api/predictByModel', db.predictByModel)
+
 app.post('/api/health', (req, res) => {
   res.send({"result":"POST Request Called"})
 })

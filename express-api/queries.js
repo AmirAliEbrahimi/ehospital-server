@@ -253,6 +253,43 @@ const getUserById = (request, response) => {
 
     })
   }
+  
+  const predictByModel = (request, response) => {
+    const var1 = request.body;
+    
+    let concave_worst = var1['concave_worst']
+    let concave_std = var1['concave_std']
+    let texture_worst = var1['texture_worst']
+    let smooth_worst = var1['smooth_worst']
+    let symm_worst = var1['symm_worst']
+    let symm_mean = var1['symm_mean']
+    let radius_std = var1['radius_std']
+    let compac_std = var1['compac_std']
+    
+    console.log(var1);
+    
+    const raw_output = []; // Store readings
+    
+    const { spawn } = require('child_process');
+    const ls = spawn('python', ['predict.py',concave_worst,concave_std,texture_worst,smooth_worst,symm_worst,symm_mean,radius_std,compac_std]);
+
+    ls.stdout.on('data', (data) => {
+//      console.log(`stdout: ${data}`);
+      raw_output.push((data));
+    });
+    
+//    ls.stderr.on('data', (data) => {
+//     console.error(`stderr: ${data}`);
+//    });
+
+    ls.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+      let prediction = parseFloat(raw_output);
+      response.send(JSON.stringify({prediction}));
+    });
+
+  }
+  
 module.exports = {
 getUsers,
 getMedicationByID,
@@ -265,6 +302,7 @@ creatediagdata,
 deletediagdata,
 deletelabdata,
 createlabdata,
-getlabByID
+getlabByID,
+predictByModel
 
 }
